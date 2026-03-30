@@ -30,15 +30,8 @@ public class ShootManager : MonoBehaviour
             timer += Time.unscaledDeltaTime;
             Shader.SetGlobalFloat("_UnscaledTime", timer * 2f);
             if (logic.CurrentDirection() == Vector2.zero)
-            {
-                indicator.IndicatorActiveState(false);
-                Debug.Log("Indicators Set to false in Update");
                 return;
-            }
-            else
-            {
-                indicator.IndicatorActiveState(true);
-            }
+
             for (int i = 0; i < totalBalls.Count; i++)
             {
                 float tempLength = 5f;
@@ -63,7 +56,6 @@ public class ShootManager : MonoBehaviour
         {
             Time.timeScale = 0.03f;
             logic.FirstClickPosition();
-            indicator.IndicatorActiveState(true);
         }
         else
         {

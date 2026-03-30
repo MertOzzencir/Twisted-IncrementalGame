@@ -9,9 +9,14 @@ public class LineIndicator : MonoBehaviour
 
     public void DrawLine(int lineIndex, Vector3 pos1, Vector3 pos2, Vector3 pos3, float lineLength)
     {
-        indicators[lineIndex].SetPosition(0, pos1);
-        indicators[lineIndex].SetPosition(1, pos2);
-        indicators[lineIndex].SetPosition(2, pos3);
+        LineRenderer currentRenderer = indicators[lineIndex];
+
+        if (!currentRenderer.gameObject.activeSelf)
+            currentRenderer.gameObject.SetActive(true);
+
+        currentRenderer.SetPosition(0, pos1);
+        currentRenderer.SetPosition(1, pos2);
+        currentRenderer.SetPosition(2, pos3);
     }
     public void CreateIndicator()
     {

@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cefdffef2abd574e8df3efa71d7a255, type: 3}
-  m_Name: Corner Data
+  m_Name: Red Data
   m_EditorClassIdentifier: Assembly-CSharp::CornersSO
   AnimationScaleVector: {x: 1, y: 1, z: 5}
   AnimationTimer: 45
+  Color: {r: 1, g: 0, b: 0, a: 1}

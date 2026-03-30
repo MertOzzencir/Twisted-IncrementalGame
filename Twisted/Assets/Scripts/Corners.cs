@@ -31,6 +31,7 @@ public class Corners : MonoBehaviour
             frontScale.x * data.AnimationScaleVector.x,
             frontScale.y * data.AnimationScaleVector.y,
             frontScale.z * data.AnimationScaleVector.z);
+        endDirectionController.GetComponentInChildren<Renderer>().material.color = data.Color;
     }
     public void Hit(Vector3 hitDirection)
     {

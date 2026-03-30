@@ -5,4 +5,5 @@ public class CornersSO : ScriptableObject
 {
     public Vector3 AnimationScaleVector;
     public float AnimationTimer;
+    public Color Color;
 }

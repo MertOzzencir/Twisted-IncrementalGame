@@ -9,10 +9,9 @@ public class ShootLogic : MonoBehaviour
         Vector3 currentWorld = ScreenToWorld(InputManager.Instance.MousePosition());
         Vector3 pressedWorld = ScreenToWorld(pressedPosition);
 
-        Vector3 aimDirection = (currentWorld - pressedWorld);
+        Vector3 aimDirection = currentWorld - pressedWorld;
         aimDirection.z = 0;
-        aimDirection = aimDirection.normalized;
-        direction = aimDirection;
+        direction = aimDirection.normalized;
     }
     public Vector2 CurrentDirection()
     {

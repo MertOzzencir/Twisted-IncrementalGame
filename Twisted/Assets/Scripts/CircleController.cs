@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using NUnit.Framework.Internal;
 using UnityEngine;
 
 public class CircleController : MonoBehaviour
@@ -11,6 +13,8 @@ public class CircleController : MonoBehaviour
     [SerializeField] private CircleTurn movementDirection;
     [SerializeField] private bool isRound;
     [SerializeField] private CornersSO cornerData;
+    [SerializeField] private CircleData[] cornerIndex;
+    [SerializeField] private int[] deletedCornerIndexArray;
     int lastTotalObject;
     float rotateAmount = 0;
     private List<GameObject> totalCreatedObjects;
@@ -40,20 +44,34 @@ public class CircleController : MonoBehaviour
 
     private void CreateCircle()
     {
+        int y = 0;
+        int previousIndex = 0;
         for (int i = 0; i < totalObject; i++)
         {
-            if (i == 0 && !isRound)
-                continue;
+
             float angle = (2 * Mathf.PI) * i / totalObject;
             GameObject placeholderObject = Instantiate(holderPrefab);
             Corners currentCorner = placeholderObject.AddComponent<Corners>();
-            currentCorner.InitializeCorner(cornerData);
+            currentCorner.InitializeCorner(cornerIndex[y].CornerData);
             placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
             float angleDegrees = angle * Mathf.Rad2Deg;
             placeholderObject.transform.LookAt(transform.position);
             placeholderObject.transform.Rotate(0, 0, 90f, Space.Self);
             placeholderObject.transform.parent = transform;
             totalCreatedObjects.Add(placeholderObject);
+            if (i >= cornerIndex[y].TotalCount - 1 + previousIndex)
+            {
+                previousIndex += cornerIndex[y].TotalCount;
+                y++;
+            }
+
+        }
+        if (deletedCornerIndexArray.Length > 0)
+        {
+            foreach (var a in deletedCornerIndexArray)
+            {
+                Destroy(totalCreatedObjects[a]);
+            }
         }
     }
     private void DebugCircle()
@@ -75,4 +93,10 @@ public enum CircleTurn
     Idle = 0,
     Reversed = 1,
     Straight = -1
+}
+[Serializable]
+public struct CircleData
+{
+    public int TotalCount;
+    public CornersSO CornerData;
 }
