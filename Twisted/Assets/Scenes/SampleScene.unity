@@ -129,6 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 310857221}
   - component: {fileID: 310857220}
+  - component: {fileID: 310857222}
+  - component: {fileID: 310857223}
   m_Layer: 0
   m_Name: ShootManager
   m_TagString: Untagged
@@ -148,10 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c3237775a8af04d9a5491d55a60108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  indicator: {fileID: 8787878913651711484, guid: 2f5180c187777ab4aa622504a1d018ff, type: 3}
   ballLayermask:
     serializedVersion: 2
     m_Bits: 55
+  totalBulletsPerReload: 5
+  reloadTimer: 2
 --- !u!4 &310857221
 Transform:
   m_ObjectHideFlags: 0
@@ -167,6 +170,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &310857222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310857219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6be731babab2943924827ee43b976f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  indicator: {fileID: 8787878913651711484, guid: 2f5180c187777ab4aa622504a1d018ff, type: 3}
+--- !u!114 &310857223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310857219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 046df22c8043e9f43b6a0d3f6b806db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

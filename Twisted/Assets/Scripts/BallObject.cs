@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallPhysic : MonoBehaviour
+public class BallObject : MonoBehaviour
 {
     [SerializeField] private int rayCount;
     [SerializeField] private float rayLength;

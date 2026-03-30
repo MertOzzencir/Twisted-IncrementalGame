@@ -2,64 +2,58 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ShootManager : MonoBehaviour
 {
-    [SerializeField] private GameObject indicator;
     [SerializeField] private LayerMask ballLayermask;
+    [SerializeField] private int totalBulletsPerReload;
+    [SerializeField] private float reloadTimer;
     public static ShootManager Instance;
-    Vector2 pressedPosition;
-    private Vector2 direction;
-    private List<BallPhysic> totalBalls = new List<BallPhysic>();
-    private List<LineRenderer> indicators = new List<LineRenderer>();
+    private List<BallObject> totalBalls = new List<BallObject>();
+    private int currentBullets;
+    private LineIndicator indicator;
+    private ShootLogic logic;
     void Awake()
     {
+        indicator = GetComponent<LineIndicator>();
+        logic = GetComponent<ShootLogic>();
+        currentBullets = totalBulletsPerReload;
         if (Instance == null)
             Instance = this;
     }
-    private Vector3 ScreenToWorld(Vector2 screenPos)
-    {
-        Vector3 pos = new Vector3(screenPos.x, screenPos.y, Camera.main.nearClipPlane);
-        return Camera.main.ScreenToWorldPoint(pos);
-    }
+
     float timer;
+    float currentReloadTimer;
     void Update()
     {
-        if (pressedPosition != Vector2.zero)
-        {
-            Vector3 currentWorld = ScreenToWorld(InputManager.Instance.MousePosition());
-            Vector3 pressedWorld = ScreenToWorld(pressedPosition);
 
-            Vector3 aimDirection = (currentWorld - pressedWorld);
-            aimDirection.z = 0;
-            aimDirection = aimDirection.normalized;
+        if (logic.ReturnFirstClickPosition() != Vector2.zero)
+        {
+            logic.CalculateDirection();
             timer += Time.unscaledDeltaTime;
-            direction = aimDirection;
             Shader.SetGlobalFloat("_UnscaledTime", timer * 2f);
+            if (logic.CurrentDirection() == Vector2.zero)
+            {
+                indicator.IndicatorActiveState(false);
+                Debug.Log("Indicators Set to false in Update");
+                return;
+            }
+            else
+            {
+                indicator.IndicatorActiveState(true);
+            }
             for (int i = 0; i < totalBalls.Count; i++)
             {
                 float tempLength = 5f;
-                if (Physics.Raycast(totalBalls[i].transform.position, aimDirection, out RaycastHit hit, Mathf.Infinity, ballLayermask))
+                if (Physics.Raycast(totalBalls[i].transform.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector2.zero)
                 {
                     tempLength = hit.distance;
-                    indicators[i].SetPosition(0, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, 0));
-                    indicators[i].SetPosition(1, new Vector3(
-                        totalBalls[i].transform.position.x + aimDirection.x * (tempLength),
-                        totalBalls[i].transform.position.y + aimDirection.y * (tempLength),
-                        0));
-                    Vector3 hitnormalOffZ = hit.normal;
-                    hitnormalOffZ.z = 0;
-                    Vector3 reflected = Vector3.Reflect(aimDirection, hitnormalOffZ).normalized;
-                    reflected.z = 0;
+                    Vector3 reflected = logic.CalculateReflectOnDirection(hit.normal);
                     Vector3 hitPoint = hit.point;
                     hitPoint.z = 0;
-                    indicators[i].SetPosition(2, hitPoint + reflected);
-                    Debug.Log(indicators[i].gameObject.activeSelf);
+                    reflected.z = 0;
+                    indicator.DrawLine(i, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, 0), new Vector3(
+                        totalBalls[i].transform.position.x + logic.CurrentDirection().x * (tempLength),
+                        totalBalls[i].transform.position.y + logic.CurrentDirection().y * (tempLength),
+                        0), hitPoint + reflected, tempLength);
                 }
-                else
-                {
-                    Debug.Log("sa?");
-                    indicators[i].SetPosition(0, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, 0));
-                    indicators[i].SetPosition(1, Vector3.zero);
-                }
-
             }
         }
     }
@@ -67,37 +61,30 @@ public class ShootManager : MonoBehaviour
     {
         if (clickState)
         {
-            pressedPosition = InputManager.Instance.MousePosition();
             Time.timeScale = 0.03f;
-            foreach (var a in indicators)
-                a.gameObject.SetActive(true);
+            logic.FirstClickPosition();
+            indicator.IndicatorActiveState(true);
         }
         else
         {
-
             Time.timeScale = 1f;
             int i = 0;
             foreach (var a in totalBalls)
             {
-                a.SetDirectionVector(direction);
+                a.SetDirectionVector(logic.CurrentDirection());
                 i++;
             }
-            pressedPosition = Vector2.zero;
-            foreach (var a in indicators)
-                a.gameObject.SetActive(false);
+            logic.ResetFirstClickPosition();
+            indicator.IndicatorActiveState(false);
+            Debug.Log("Indicators Set to false in Mouse click");
         }
     }
-    public void SubscribeToShootManager(BallPhysic ball)
+    public void SubscribeToShootManager(BallObject ball)
     {
         totalBalls.Add(ball);
-        GameObject objects = Instantiate(indicator);
-        objects.transform.position = new Vector3(objects.transform.position.x, objects.transform.position.y, 0);
-        LineRenderer newIndicator = objects.GetComponent<LineRenderer>();
-        newIndicator.gameObject.SetActive(false);
-        objects.transform.parent = transform;
-        indicators.Add(newIndicator);
+        indicator.CreateIndicator();
     }
-    public void UnSubscribeToShootManager(BallPhysic ball)
+    public void UnSubscribeToShootManager(BallObject ball)
     {
         totalBalls.Remove(ball);
     }
