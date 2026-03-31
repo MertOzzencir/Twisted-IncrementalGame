@@ -6,13 +6,10 @@ using UnityEngine;
 public class CircleController : MonoBehaviour
 {
 
-    [SerializeField] private GameObject holderPrefab;
     [SerializeField] private int totalObject;
     [SerializeField] private float rotateMultiplier;
     [SerializeField] private float radius;
     [SerializeField] private CircleTurn movementDirection;
-    [SerializeField] private bool isRound;
-    [SerializeField] private CornersSO cornerData;
     [SerializeField] private CircleData[] cornerIndex;
     [SerializeField] private int[] deletedCornerIndexArray;
     int lastTotalObject;
@@ -50,13 +47,13 @@ public class CircleController : MonoBehaviour
         {
 
             float angle = (2 * Mathf.PI) * i / totalObject;
-            GameObject placeholderObject = Instantiate(holderPrefab);
-            Corners currentCorner = placeholderObject.AddComponent<Corners>();
+            GameObject placeholderObject = Instantiate(cornerIndex[y].CornerData.Prefab);
+            Corners currentCorner = placeholderObject.GetComponent<Corners>();
             currentCorner.InitializeCorner(cornerIndex[y].CornerData);
             placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
-            float angleDegrees = angle * Mathf.Rad2Deg;
-            placeholderObject.transform.LookAt(transform.position);
-            placeholderObject.transform.Rotate(0, 0, 90f, Space.Self);
+            Vector3 dirToCenter = (transform.position - placeholderObject.transform.position).normalized;
+            float angleDegrees = Mathf.Atan2(dirToCenter.y, dirToCenter.x) * Mathf.Rad2Deg;
+            placeholderObject.transform.rotation = Quaternion.Euler(0, 0, angleDegrees - 90f);
             placeholderObject.transform.parent = transform;
             totalCreatedObjects.Add(placeholderObject);
             if (i >= cornerIndex[y].TotalCount - 1 + previousIndex)

@@ -45,9 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   holderPrefab: {fileID: 7100751577675768573, guid: 3d5892f7936f8fc4d916ea50d0fd2f58, type: 3}
-  totalObject: 23
+  totalObject: 67
   rotateMultiplier: 200
-  radius: 1
+  radius: 13.41
   movementDirection: -1
-  isRound: 1
+  isRound: 0
   cornerData: {fileID: 11400000, guid: 2270cd4436a8bf644913088c5b571abf, type: 2}
+  cornerIndex:
+  - TotalCount: 20
+    CornerData: {fileID: 11400000, guid: 2270cd4436a8bf644913088c5b571abf, type: 2}
+  - TotalCount: 20
+    CornerData: {fileID: 11400000, guid: 9f99be37fadd90d44a77e1f1bd821ce5, type: 2}
+  - TotalCount: 27
+    CornerData: {fileID: 11400000, guid: 35da88e62560c8947824e8c64f9a7d6a, type: 2}
+  deletedCornerIndexArray: 

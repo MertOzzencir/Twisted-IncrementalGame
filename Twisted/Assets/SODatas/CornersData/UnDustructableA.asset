@@ -10,8 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cefdffef2abd574e8df3efa71d7a255, type: 3}
-  m_Name: Red Data
+  m_Name: UnDustructableA
   m_EditorClassIdentifier: Assembly-CSharp::CornersSO
   AnimationScaleVector: {x: 1, y: 1, z: 5}
   AnimationTimer: 45
-  Color: {r: 1, g: 0, b: 0, a: 1}
+  Color: {r: 1, g: 1, b: 1, a: 0}
+  Prefab: {fileID: 4019624737576963319, guid: e8649f645ff5fef49911f032569b7f4a, type: 3}
+  DropPrefab: {fileID: 3965846082929436218, guid: f1d32a63d7597cc4898e3574ba99ba93, type: 3}
+  IsDestructable: 0

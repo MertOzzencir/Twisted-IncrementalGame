@@ -6,6 +6,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
     public static event Action<bool> OnMouseLeftClick;
+    public static event Action OnLoad;
+    public static event Action OnSave;
     private InputActions inputBase;
     private void Awake()
     {
@@ -41,14 +43,28 @@ public class InputManager : MonoBehaviour
         inputBase.Enable();
         inputBase.Player.MouseLeftClick.started += MouseLeftClick;
         inputBase.Player.MouseLeftClick.canceled += MouseLeftClick;
-
+        inputBase.Player.Save.started += SaveButton;
+        inputBase.Player.Load.started += LoadButton;
 
     }
+
+    private void LoadButton(InputAction.CallbackContext context)
+    {
+        OnLoad?.Invoke();
+    }
+
+    private void SaveButton(InputAction.CallbackContext context)
+    {
+        OnSave?.Invoke();
+    }
+
     private void OnDisable()
     {
         inputBase.Disable();
         inputBase.Player.MouseLeftClick.started -= MouseLeftClick;
         inputBase.Player.MouseLeftClick.canceled -= MouseLeftClick;
+        inputBase.Player.Save.started -= SaveButton;
+        inputBase.Player.Load.started -= LoadButton;
     }
 
 }

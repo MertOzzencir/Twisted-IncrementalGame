@@ -31,8 +31,9 @@ public class BallObject : MonoBehaviour
                 {
                     Vector3 dir = (hit.point - transform.position).normalized;
                     SetDirectionVector(Vector3.Reflect(dir, hit.normal).normalized);
-                    if (hit.transform.TryGetComponent(out Corners hitCorner))
+                    if (hit.transform.TryGetComponent(out DestructableCorner hitCorner))
                     {
+                        Debug.Log("Trying to Hit The wall");
                         hitCorner.Hit(dir);
                     }
                     testTimer = 0;

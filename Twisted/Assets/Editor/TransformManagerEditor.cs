@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(TransformManager))]
-public class SavePositionEditor : Editor
+public class TransformManagerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
@@ -13,6 +13,8 @@ public class SavePositionEditor : Editor
             script.Save();
         if (GUILayout.Button("Load"))
             script.Load();
+        if (GUILayout.Button("Erase Data"))
+            script.EraseAllData();
     }
 }
 #endif

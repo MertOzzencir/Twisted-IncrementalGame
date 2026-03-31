@@ -1,82 +1,38 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Corners : MonoBehaviour
 {
-    private CornersSO data;
+    protected CornersSO data { get; set; }
 
 
-    private Transform endDirectionController;
-    private Transform frontDirectionController;
-    private Vector3 endScaleAnimationScale;
-    private Vector3 frontAnimationScale;
-    private Vector3 endScale;
-    private Vector3 frontScale;
-    Coroutine animationCorner;
-    public void InitializeCorner(CornersSO data)
+    protected Transform EndController { get; set; }
+    protected Transform FrontController { get; set; }
+    protected Vector3 EndAnimationScale;
+    protected Vector3 FrontAnimationScale;
+    protected Vector3 EndOriginalScale;
+    protected Vector3 FrontOriginalScale;
+    public virtual void InitializeCorner(CornersSO data)
     {
-        endDirectionController = transform.Find("Front/End");
-        frontDirectionController = transform.Find("Front");
+        Debug.Log("Main");
         this.data = data;
+        EndController = transform.Find("Front/End");
+        FrontController = transform.Find("Front");
+        EndOriginalScale = EndController.localScale;
+        FrontOriginalScale = FrontController.localScale;
 
-        endScale = endDirectionController.localScale;
-        frontScale = frontDirectionController.localScale;
+        EndAnimationScale = new Vector3(
+            EndOriginalScale.x * data.AnimationScaleVector.x,
+            EndOriginalScale.y * data.AnimationScaleVector.y,
+            EndOriginalScale.z * data.AnimationScaleVector.z);
 
-        endScaleAnimationScale = new Vector3(
-            endScale.x * data.AnimationScaleVector.x,
-            endScale.y * data.AnimationScaleVector.y,
-            endScale.z * data.AnimationScaleVector.z);
-
-        frontAnimationScale = new Vector3(
-            frontScale.x * data.AnimationScaleVector.x,
-            frontScale.y * data.AnimationScaleVector.y,
-            frontScale.z * data.AnimationScaleVector.z);
-        endDirectionController.GetComponentInChildren<Renderer>().material.color = data.Color;
-    }
-    public void Hit(Vector3 hitDirection)
-    {
-        Transform currentController = null;
-        Vector3 animationScale = Vector3.zero;
-        Vector3 originalScale = Vector3.zero;
-        float hitDot = Vector3.Dot(transform.forward, hitDirection);
-        if (hitDot >= 0)
-        {
-            currentController = endDirectionController;
-            animationScale = endScaleAnimationScale;
-            originalScale = endScale;
-        }
-        else
-        {
-            currentController = frontDirectionController;
-            animationScale = frontAnimationScale;
-            originalScale = frontScale;
-        }
-
-        if (animationCorner != null)
-        {
-            StopCoroutine(animationCorner);
-            endDirectionController.localScale = endScale;
-            frontDirectionController.localScale = frontScale;
-        }
-        animationCorner = StartCoroutine(HitAnimation(currentController, animationScale, originalScale));
-
+        FrontAnimationScale = new Vector3(
+            FrontOriginalScale.x * data.AnimationScaleVector.x,
+            FrontOriginalScale.y * data.AnimationScaleVector.y,
+            FrontOriginalScale.z * data.AnimationScaleVector.z);
+        EndController.GetComponentInChildren<Renderer>().material.color = data.Color;
     }
 
-    private IEnumerator HitAnimation(Transform animationController, Vector3 animationScale, Vector3 originalScale)
-    {
-        while (Vector3.Distance(animationController.localScale, animationScale) > 0.001f)
-        {
-            animationController.localScale = Vector3.MoveTowards(animationController.localScale, animationScale, data.AnimationTimer * Time.deltaTime);
-            yield return null;
-        }
-        animationController.localScale = animationScale;
-
-        while (Vector3.Distance(animationController.localScale, originalScale) > 0.001f)
-        {
-            animationController.localScale = Vector3.MoveTowards(animationController.localScale, originalScale, data.AnimationTimer * Time.deltaTime);
-            yield return null;
-        }
-        animationController.localScale = originalScale;
-        animationCorner = null;
-    }
 }

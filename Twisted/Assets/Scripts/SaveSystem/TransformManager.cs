@@ -19,4 +19,18 @@ public class TransformManager : MonoBehaviour
             a.Load(AllData.GetData(UnityEditor.GlobalObjectId.GetGlobalObjectIdSlow(a.gameObject).ToString()));
         }
     }
+    public void EraseAllData()
+    {
+        AllData.EraseAllData();
+    }
+    void OnEnable()
+    {
+        InputManager.OnSave += Save;
+        InputManager.OnLoad += Load;
+    }
+    void OnDisable()
+    {
+        InputManager.OnSave -= Save;
+        InputManager.OnLoad -= Load;
+    }
 }

@@ -36,6 +36,10 @@ public class SaveSO : ScriptableObject
         }
         return null;
     }
+    public void EraseAllData()
+    {
+        ObjectSaveDatas.Clear();
+    }
 }
 
 [Serializable]

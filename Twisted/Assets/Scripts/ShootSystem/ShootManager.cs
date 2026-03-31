@@ -38,14 +38,11 @@ public class ShootManager : MonoBehaviour
                 if (Physics.Raycast(totalBalls[i].transform.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector2.zero)
                 {
                     tempLength = hit.distance;
-                    Vector3 reflected = logic.CalculateReflectOnDirection(hit.normal);
-                    Vector3 hitPoint = hit.point;
-                    hitPoint.z = 0;
-                    reflected.z = 0;
+            
                     indicator.DrawLine(i, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, 0), new Vector3(
                         totalBalls[i].transform.position.x + logic.CurrentDirection().x * (tempLength),
                         totalBalls[i].transform.position.y + logic.CurrentDirection().y * (tempLength),
-                        0), hitPoint + reflected, tempLength);
+                        0), tempLength * 2);
                 }
             }
         }
@@ -68,7 +65,6 @@ public class ShootManager : MonoBehaviour
             }
             logic.ResetFirstClickPosition();
             indicator.IndicatorActiveState(false);
-            Debug.Log("Indicators Set to false in Mouse click");
         }
     }
     public void SubscribeToShootManager(BallObject ball)
