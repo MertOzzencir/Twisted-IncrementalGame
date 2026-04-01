@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
 using UnityEngine;
 
 public class CircleController : MonoBehaviour
 {
-
     [SerializeField] private int totalObject;
     [SerializeField] private float rotateMultiplier;
     [SerializeField] private float radius;
@@ -20,9 +18,7 @@ public class CircleController : MonoBehaviour
         totalCreatedObjects = new List<GameObject>();
         lastTotalObject = totalObject;
         CreateCircle();
-
     }
-
     void Update()
     {
         DebugCircle();
@@ -34,26 +30,24 @@ public class CircleController : MonoBehaviour
         {
             rotateAmount = Mathf.Lerp(rotateAmount, 0, 15 * Time.deltaTime);
         }
-
-        transform.Rotate(0, 0, rotateAmount);
-
+        transform.Rotate(0, rotateAmount, 0);
     }
-
     private void CreateCircle()
     {
         int y = 0;
         int previousIndex = 0;
         for (int i = 0; i < totalObject; i++)
         {
-
             float angle = (2 * Mathf.PI) * i / totalObject;
             GameObject placeholderObject = Instantiate(cornerIndex[y].CornerData.Prefab);
             Corners currentCorner = placeholderObject.GetComponent<Corners>();
             currentCorner.InitializeCorner(cornerIndex[y].CornerData);
-            placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
+            placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
             Vector3 dirToCenter = (transform.position - placeholderObject.transform.position).normalized;
-            float angleDegrees = Mathf.Atan2(dirToCenter.y, dirToCenter.x) * Mathf.Rad2Deg;
-            placeholderObject.transform.rotation = Quaternion.Euler(0, 0, angleDegrees - 90f);
+            placeholderObject.transform.rotation = Quaternion.LookRotation(dirToCenter, Vector3.up);
+            //placeholderObject.transform.Rotate(0, 90f, 0, Space.Self); // prefabına göre ayarla
+
+
             placeholderObject.transform.parent = transform;
             totalCreatedObjects.Add(placeholderObject);
             if (i >= cornerIndex[y].TotalCount - 1 + previousIndex)
@@ -61,7 +55,6 @@ public class CircleController : MonoBehaviour
                 previousIndex += cornerIndex[y].TotalCount;
                 y++;
             }
-
         }
         if (deletedCornerIndexArray.Length > 0)
         {

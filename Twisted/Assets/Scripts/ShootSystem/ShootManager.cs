@@ -5,6 +5,7 @@ public class ShootManager : MonoBehaviour
     [SerializeField] private LayerMask ballLayermask;
     [SerializeField] private int totalBulletsPerReload;
     [SerializeField] private float reloadTimer;
+    [SerializeField] private LayerMask groundMask;
     public static ShootManager Instance;
     private List<BallObject> totalBalls = new List<BallObject>();
     private int currentBullets;
@@ -17,32 +18,33 @@ public class ShootManager : MonoBehaviour
         currentBullets = totalBulletsPerReload;
         if (Instance == null)
             Instance = this;
+        logic.InitializeLogic(groundMask);
     }
 
     float timer;
     float currentReloadTimer;
+    private bool shootFlag;
     void Update()
     {
 
-        if (logic.ReturnFirstClickPosition() != Vector2.zero)
+        if (shootFlag)
         {
-            logic.CalculateDirection();
             timer += Time.unscaledDeltaTime;
             Shader.SetGlobalFloat("_UnscaledTime", timer * 2f);
-            if (logic.CurrentDirection() == Vector2.zero)
-                return;
 
             for (int i = 0; i < totalBalls.Count; i++)
             {
+                logic.CalculateDirection(totalBalls[i].transform.position);
                 float tempLength = 5f;
-                if (Physics.Raycast(totalBalls[i].transform.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector2.zero)
+                if (Physics.Raycast(totalBalls[i].transform.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector3.zero)
                 {
                     tempLength = hit.distance;
-            
-                    indicator.DrawLine(i, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, 0), new Vector3(
+
+                    indicator.DrawLine(i, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, totalBalls[i].transform.position.z), new Vector3(
                         totalBalls[i].transform.position.x + logic.CurrentDirection().x * (tempLength),
-                        totalBalls[i].transform.position.y + logic.CurrentDirection().y * (tempLength),
-                        0), tempLength * 2);
+                        totalBalls[i].transform.position.y,
+                        totalBalls[i].transform.position.z + logic.CurrentDirection().z * (tempLength)),
+                        tempLength * 2);
                 }
             }
         }
@@ -52,7 +54,7 @@ public class ShootManager : MonoBehaviour
         if (clickState)
         {
             Time.timeScale = 0.03f;
-            logic.FirstClickPosition();
+            shootFlag = true;
         }
         else
         {
@@ -65,6 +67,7 @@ public class ShootManager : MonoBehaviour
             }
             logic.ResetFirstClickPosition();
             indicator.IndicatorActiveState(false);
+            shootFlag = false;
         }
     }
     public void SubscribeToShootManager(BallObject ball)

@@ -51,8 +51,8 @@ public class DestructableCorner : Corners
             FrontController.localScale = FrontOriginalScale;
         }
         animationCorner = StartCoroutine(HitAnimation(currentController, animationScale, originalScale));
+        HandleReciept(currentHitTimer % 3);
         currentHitTimer++;
-        HandleReciept(currentHitTimer % 4);
 
     }
     private void HandleReciept(int currentHit)

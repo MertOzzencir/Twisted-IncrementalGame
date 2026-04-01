@@ -20,7 +20,7 @@ public class LineIndicator : MonoBehaviour
     public void CreateIndicator()
     {
         GameObject objects = Instantiate(indicator);
-        objects.transform.position = new Vector3(objects.transform.position.x, objects.transform.position.y, 0);
+        objects.transform.position = new Vector3(objects.transform.position.x, 0, objects.transform.position.z);
         LineRenderer newIndicator = objects.GetComponent<LineRenderer>();
         newIndicator.gameObject.SetActive(false);
         objects.transform.parent = transform;

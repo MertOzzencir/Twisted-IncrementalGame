@@ -8,14 +8,22 @@ public class OrderUIManager : MonoBehaviour
     private Vector3 cameraDirection;
     void Start()
     {
-        cameraDirection = Camera.main.transform.position - worldCanvas.transform.position;
-        Vector3 upVector = transform.position - worldCanvas.transform.position;
-        Quaternion lookDirection = Quaternion.LookRotation(cameraDirection, -upVector);
-        worldCanvas.transform.rotation = lookDirection;
+        LookAtCamera();
     }
-
+    void Update()
+    {
+        LookAtCamera();
+    }
     public void SetUI(int currentIndex)
     {
         worldCanvas.GetComponentInChildren<Image>().sprite = UISprites[currentIndex];
+    }
+    public void LookAtCamera()
+    {
+        cameraDirection = Camera.main.transform.position - worldCanvas.transform.position;
+        cameraDirection.y = 0;
+        Vector3 upVector = Vector3.up;
+        Quaternion lookDirection = Quaternion.LookRotation(cameraDirection, upVector);
+        worldCanvas.transform.rotation = lookDirection;
     }
 }
