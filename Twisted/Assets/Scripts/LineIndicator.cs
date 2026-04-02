@@ -7,7 +7,7 @@ public class LineIndicator : MonoBehaviour
 
     List<LineRenderer> indicators = new List<LineRenderer>();
 
-    public void DrawLine(int lineIndex, Vector3 pos1, Vector3 pos2, float lineLength)
+    public void DrawLine(int lineIndex, Vector3 pos1, Vector3 pos2)
     {
         LineRenderer currentRenderer = indicators[lineIndex];
 

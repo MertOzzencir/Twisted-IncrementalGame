@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 public class ShootManager : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class ShootManager : MonoBehaviour
     [SerializeField] private float reloadTimer;
     [SerializeField] private LayerMask groundMask;
     public static ShootManager Instance;
-    private List<BallObject> totalBalls = new List<BallObject>();
+    private List<WaiterManagment> totalBalls = new List<WaiterManagment>();
     private int currentBullets;
     private LineIndicator indicator;
     private ShootLogic logic;
@@ -22,7 +23,6 @@ public class ShootManager : MonoBehaviour
     }
 
     float timer;
-    float currentReloadTimer;
     private bool shootFlag;
     void Update()
     {
@@ -34,18 +34,28 @@ public class ShootManager : MonoBehaviour
 
             for (int i = 0; i < totalBalls.Count; i++)
             {
-                logic.CalculateDirection(totalBalls[i].transform.position);
+                Transform currentWaiter = totalBalls[i].Waiter.transform;
+                totalBalls[i].CurrentDirection = logic.CalculateDirection(currentWaiter.position);
                 float tempLength = 5f;
-                if (Physics.Raycast(totalBalls[i].transform.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector3.zero)
+                if (Physics.Raycast(currentWaiter.position, logic.CurrentDirection(), out RaycastHit hit, Mathf.Infinity, ballLayermask) && logic.CurrentDirection() != Vector3.zero)
                 {
-                    tempLength = hit.distance;
+                    Ray ray = Camera.main.ScreenPointToRay(InputManager.Instance.MousePosition());
+                    if (Physics.Raycast(ray, out RaycastHit ground))
+                    {
+                        float groundFloat = Vector3.Distance(currentWaiter.position, ground.point);
+                        float wallFloat = Vector3.Distance(currentWaiter.position, hit.point);
+                        if (groundFloat < wallFloat)
+                            tempLength = groundFloat;
+                        else
+                            tempLength = wallFloat;
+                    }
 
-                    indicator.DrawLine(i, new Vector3(totalBalls[i].transform.position.x, totalBalls[i].transform.position.y, totalBalls[i].transform.position.z), new Vector3(
-                        totalBalls[i].transform.position.x + logic.CurrentDirection().x * (tempLength),
-                        totalBalls[i].transform.position.y,
-                        totalBalls[i].transform.position.z + logic.CurrentDirection().z * (tempLength)),
-                        tempLength * 2);
+                    indicator.DrawLine(i, new Vector3(currentWaiter.position.x, currentWaiter.position.y, currentWaiter.position.z), new Vector3(
+                        currentWaiter.position.x + logic.CurrentDirection().normalized.x * (tempLength),
+                        currentWaiter.position.y,
+                        currentWaiter.position.z + logic.CurrentDirection().normalized.z * (tempLength)));
                 }
+
             }
         }
     }
@@ -53,16 +63,14 @@ public class ShootManager : MonoBehaviour
     {
         if (clickState)
         {
-            Time.timeScale = 0.03f;
             shootFlag = true;
         }
         else
         {
-            Time.timeScale = 1f;
             int i = 0;
             foreach (var a in totalBalls)
             {
-                a.SetDirectionVector(logic.CurrentDirection());
+                a.Waiter.SetDirectionVector(a.CurrentDirection);
                 i++;
             }
             logic.ResetFirstClickPosition();
@@ -70,14 +78,22 @@ public class ShootManager : MonoBehaviour
             shootFlag = false;
         }
     }
-    public void SubscribeToShootManager(BallObject ball)
+    public void SubscribeToShootManager(WaiterManager ball)
     {
-        totalBalls.Add(ball);
+        WaiterManagment newWaiter = new WaiterManagment(ball, Vector3.zero);
+        totalBalls.Add(newWaiter);
         indicator.CreateIndicator();
     }
-    public void UnSubscribeToShootManager(BallObject ball)
+    public void UnSubscribeToShootManager(WaiterManager ball)
     {
-        totalBalls.Remove(ball);
+        foreach (var a in totalBalls)
+        {
+            if (a.Waiter == ball)
+            {
+                totalBalls.Remove(a);
+                break;
+            }
+        }
     }
     void OnEnable()
     {
@@ -86,5 +102,16 @@ public class ShootManager : MonoBehaviour
     private void OnDisable()
     {
         InputManager.OnMouseLeftClick -= CalculateShootDirection;
+    }
+}
+
+public class WaiterManagment
+{
+    public WaiterManager Waiter;
+    public Vector3 CurrentDirection;
+    public WaiterManagment(WaiterManager newWaiter, Vector3 currentDirection)
+    {
+        Waiter = newWaiter;
+        CurrentDirection = currentDirection;
     }
 }
