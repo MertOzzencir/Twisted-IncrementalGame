@@ -49,11 +49,7 @@ public class WaiterManager : MonoBehaviour
                         }
                         hitCorner.Hit(rb.linearVelocity);
                     }
-                    if (hit.transform.TryGetComponent(out Sources source))
-                    {
 
-                        source.Collect();
-                    }
                     testTimer = 0;
                     break;
                 }

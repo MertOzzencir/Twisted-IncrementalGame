@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3416312796857621803}
   - component: {fileID: 8865908576421648203}
   - component: {fileID: -2450446133986881003}
-  - component: {fileID: 1361949341625864496}
   - component: {fileID: 8797491089841262805}
   m_Layer: 8
   m_Name: CoinSource
@@ -76,21 +75,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinSource
   SourceType: {fileID: 11400000, guid: 82d5fa1fa4bdae04e8707e8a531c2cc8, type: 2}
---- !u!114 &1361949341625864496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3965846082929436218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18f5517c3a973e44d928a312c1e78c10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
-  rideHeight: 2
-  rideSpringStrength: 180
-  rideSpringDamper: 30
 --- !u!136 &8797491089841262805
 CapsuleCollider:
   m_ObjectHideFlags: 0

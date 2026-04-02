@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CoinSO
   m_EditorClassIdentifier: Assembly-CSharp::SourcesSO
   SourceName: Coin
-  Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  Icon: {fileID: 21300000, guid: 9d90cf35fdcdf0d4f886b6ea1775eac8, type: 3}

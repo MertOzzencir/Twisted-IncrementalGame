@@ -10,7 +10,6 @@ public class DestructableCorner : Corners
 
     private UIManager UIManager;
     private int currentHitTimer;
-    private GameObject dropOnOrderComplete;
     private Coroutine animationCorner;
     protected Vector3 EndOriginalScale;
     protected Vector3 FrontOriginalScale;
@@ -26,7 +25,6 @@ public class DestructableCorner : Corners
 
         UIManager = GetComponent<UIManager>();
         UIManager.SetUI(0);
-        dropOnOrderComplete = ownData.DropPrefab;
         EndOriginalScale = EndController.localScale;
         FrontOriginalScale = FrontController.localScale;
         EndAnimationScale = new Vector3(
@@ -94,7 +92,7 @@ public class DestructableCorner : Corners
     {
         UIManager.SetUI(0);
         Debug.Log("Dish Served");
-        Instantiate(dropOnOrderComplete, transform.position, Quaternion.Euler(90, 0, 0));
+        ownData.DropPrefab.GetComponent<Sources>().Collect();
         Destroy(gameObject);
         currentHitTimer = 0;
     }
