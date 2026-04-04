@@ -5,6 +5,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private Canvas worldCanvas;
     [SerializeField] private Sprite[] UISprites;
+    [Range(0f,1f)]
     private Vector3 cameraDirection;
     void Start()
     {
@@ -21,9 +22,7 @@ public class UIManager : MonoBehaviour
     public void LookAtCamera()
     {
         cameraDirection = Camera.main.transform.position - worldCanvas.transform.position;
-        cameraDirection.y = 0;
-        Vector3 upVector = Vector3.up;
-        Quaternion lookDirection = Quaternion.LookRotation(cameraDirection, upVector);
+        Quaternion lookDirection = Quaternion.LookRotation(cameraDirection, Vector3.up);
         worldCanvas.transform.rotation = lookDirection;
     }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1629073d0473c141ad52870be6a3aca, type: 3}
-  m_Name: Destructablecorner
+  m_Name: ServeableTable
   m_EditorClassIdentifier: Assembly-CSharp::DestructableCornerSO
   Color: {r: 0.35955048, g: 1, b: 0, a: 0}
   Prefab: {fileID: 7100751577675768573, guid: 3d5892f7936f8fc4d916ea50d0fd2f58, type: 3}

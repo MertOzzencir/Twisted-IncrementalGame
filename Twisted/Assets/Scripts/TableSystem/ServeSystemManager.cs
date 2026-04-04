@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CornerManager : MonoBehaviour
+public class ServeSystemManager : MonoBehaviour
 {
     [SerializeField] private int totalObject;
     [SerializeField] private float rotateMultiplier;
     [SerializeField] private float radius;
-    [SerializeField] private CircleTurn movementDirection;
-    [SerializeField] private CircleData[] cornerIndex;
-    [SerializeField] private int[] deletedCornerIndexArray;
+    [SerializeField] private TableTurnDirection movementDirection;
+    [SerializeField] private TableData[] tableIndex;
+    [SerializeField] private int[] tablesRemoveIndexs;
     int lastTotalObject;
     float rotateAmount = 0;
-    private List<Corners> createdCorners = new List<Corners>();
+    private List<ServeMain> createdTables = new List<ServeMain>();
     void Awake()
     {
         lastTotalObject = totalObject;
@@ -34,7 +34,7 @@ public class CornerManager : MonoBehaviour
     private void CreateCircle()
     {
         int totalCornerCount = 0;
-        foreach (var c in cornerIndex)
+        foreach (var c in tableIndex)
             totalCornerCount += c.TotalCount;
 
         if (totalObject > totalCornerCount)
@@ -43,17 +43,17 @@ public class CornerManager : MonoBehaviour
             return;
         }
 
-        if (cornerIndex.Length == 0 || totalObject <= 0)
+        if (tableIndex.Length == 0 || totalObject <= 0)
             return;
         int y = 0;
         int previousIndex = 0;
         for (int i = 0; i < totalObject; i++)
         {
             float angle = (2 * Mathf.PI) * i / totalObject;
-            GameObject placeholderObject = Instantiate(cornerIndex[y].CornerData.Prefab);
-            Corners currentCorner = placeholderObject.GetComponent<Corners>();
-            createdCorners.Add(currentCorner);
-            currentCorner.InitializeCorner(cornerIndex[y].CornerData, this);
+            GameObject placeholderObject = Instantiate(tableIndex[y].ServeTableData.Prefab);
+            ServeMain currentCorner = placeholderObject.GetComponent<ServeMain>();
+            createdTables.Add(currentCorner);
+            currentCorner.InitializeTable(tableIndex[y].ServeTableData, this);
             placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
             Vector3 dirToCenter = (transform.position - placeholderObject.transform.position).normalized;
             placeholderObject.transform.rotation = Quaternion.LookRotation(dirToCenter, Vector3.up);
@@ -61,31 +61,31 @@ public class CornerManager : MonoBehaviour
 
 
             placeholderObject.transform.parent = transform;
-            if (i >= cornerIndex[y].TotalCount - 1 + previousIndex)
+            if (i >= tableIndex[y].TotalCount - 1 + previousIndex)
             {
-                previousIndex += cornerIndex[y].TotalCount;
+                previousIndex += tableIndex[y].TotalCount;
                 y++;
             }
         }
-        if (deletedCornerIndexArray.Length > 0)
+        if (tablesRemoveIndexs.Length > 0)
         {
-            List<int> sorted = new List<int>(deletedCornerIndexArray);
+            List<int> sorted = new List<int>(tablesRemoveIndexs);
             sorted.Sort((a, b) => b.CompareTo(a));
 
             foreach (var a in sorted)
             {
-                Destroy(createdCorners[a].gameObject);
-                createdCorners.RemoveAt(a);
+                Destroy(createdTables[a].gameObject);
+                createdTables.RemoveAt(a);
             }
         }
     }
-    public void DeleteCornerOnList(Corners c)
+    public void DeleteCornerOnList(ServeMain c)
     {
-        foreach (var a in createdCorners)
+        foreach (var a in createdTables)
         {
             if (c == a)
             {
-                createdCorners.Remove(a);
+                createdTables.Remove(a);
                 break;
             }
         }
@@ -94,26 +94,26 @@ public class CornerManager : MonoBehaviour
     {
         if (lastTotalObject != totalObject)
         {
-            foreach (var a in createdCorners)
+            foreach (var a in createdTables)
             {
                 if (a.gameObject != null)
                     Destroy(a.gameObject);
             }
             lastTotalObject = totalObject;
-            createdCorners.Clear();
+            createdTables.Clear();
             CreateCircle();
         }
     }
 }
-public enum CircleTurn
+public enum TableTurnDirection
 {
     Idle = 0,
     Reversed = 1,
     Straight = -1
 }
 [Serializable]
-public struct CircleData
+public struct TableData
 {
     public int TotalCount;
-    public CornersSO CornerData;
+    public ServeMainSO ServeTableData;
 }

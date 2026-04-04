@@ -38,7 +38,7 @@ public class WaiterManager : MonoBehaviour
                 {
                     //Vector3 dir = (hit.point - transform.position).normalized;
 
-                    if (hit.transform.TryGetComponent(out DestructableCorner hitCorner))
+                    if (hit.transform.TryGetComponent(out ServeableTable hitCorner))
                     {
                         SetDirectionVector(Vector3.Reflect(rb.linearVelocity, hit.normal).normalized);
                         Debug.Log("Trying to Hit The wall");
