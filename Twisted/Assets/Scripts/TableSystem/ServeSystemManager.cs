@@ -54,7 +54,7 @@ public class ServeSystemManager : MonoBehaviour
             ServeMain currentCorner = placeholderObject.GetComponent<ServeMain>();
             createdTables.Add(currentCorner);
             currentCorner.InitializeTable(tableIndex[y].ServeTableData, this);
-            placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
+            placeholderObject.transform.position = new Vector3(Mathf.Cos(angle) * radius, transform.position.y, Mathf.Sin(angle) * radius);
             Vector3 dirToCenter = (transform.position - placeholderObject.transform.position).normalized;
             placeholderObject.transform.rotation = Quaternion.LookRotation(dirToCenter, Vector3.up);
             //placeholderObject.transform.Rotate(0, 90f, 0, Space.Self); // prefabına göre ayarla

@@ -12,6 +12,7 @@ public class WaiterManager : MonoBehaviour
     [SerializeField] private float inAnimationTime;
     [SerializeField] private float outAnimationTime;
     [SerializeField] private GameObject visual;
+    [SerializeField] private Transform rayHeight;
     private Rigidbody rb;
     private List<Vector3> normalizedRays;
     Vector3 forceDirection;
@@ -83,7 +84,7 @@ public class WaiterManager : MonoBehaviour
         for (int i = 0; i < rayCount; i++)
         {
             float angle = (2 * Mathf.PI) * i / rayCount;
-            Vector3 dir = new Vector3(Mathf.Cos(angle), transform.position.y, Mathf.Sin(angle));
+            Vector3 dir = new Vector3(Mathf.Cos(angle), rayHeight.position.y, Mathf.Sin(angle));
 
             normalizedRays.Add(dir);
         }
