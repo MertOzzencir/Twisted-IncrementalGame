@@ -13,5 +13,9 @@ public class CustomerMovement : MonoBehaviour
     {
         RB.linearVelocity = transform.forward * walkPower;
     }
-
+    public void StopVelocity()
+    {
+        RB.linearVelocity = Vector3.zero;
+        Destroy(RB);
+    }
 }

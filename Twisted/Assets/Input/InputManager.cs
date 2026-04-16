@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour
     public static event Action OnLoad;
     public static event Action OnSave;
     public static event Action OnTab;
+    public static event Action<int> OnNumPads;
     private InputActions inputBase;
     private void Awake()
     {
@@ -53,6 +54,15 @@ public class InputManager : MonoBehaviour
     {
         OnSave?.Invoke();
     }
+    private void NumPadsPressed(InputAction.CallbackContext context)
+    {
+        string cxt = context.control.name;
+
+        if (int.TryParse(cxt, out int num))
+        {
+            OnNumPads?.Invoke(num);
+        }
+    }
 
     private void OnEnable()
     {
@@ -62,8 +72,9 @@ public class InputManager : MonoBehaviour
         inputBase.Player.Save.started += SaveButton;
         inputBase.Player.Load.started += LoadButton;
         inputBase.Player.Tab.started += OpenInventory;
-
+        inputBase.Player.NumPads.performed += NumPadsPressed;
     }
+
 
     private void OnDisable()
     {
@@ -73,6 +84,7 @@ public class InputManager : MonoBehaviour
         inputBase.Player.Save.started -= SaveButton;
         inputBase.Player.Load.started -= LoadButton;
         inputBase.Player.Tab.started -= OpenInventory;
+        inputBase.Player.NumPads.performed -= NumPadsPressed;
     }
 
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR;
 
 public class ServeableTable : ServeMain
 {
@@ -13,6 +14,19 @@ public class ServeableTable : ServeMain
     private int currentHitTimer;
     ServeableTableSO ownData;
     private List<CustomerBase> allCustomer = new List<CustomerBase>();
+    private int totalHitCount;
+    void Awake()
+    {
+        int lastBiggest = 0;
+        foreach (var a in hitActions)
+        {
+            if (a.hitCount > lastBiggest)
+            {
+                lastBiggest = a.hitCount;
+                totalHitCount = a.hitCount;
+            }
+        }
+    }
     public override void InitializeTable(ServeMainSO data, ServeSystemManager currentOwner)
     {
 
@@ -22,7 +36,7 @@ public class ServeableTable : ServeMain
         currentHitTimer = 0;
 
         UIManager = GetComponent<UIManager>();
-        UIManager.SetUI(0);
+        UIManager.SetSprite(0);
 
     }
     public void SitOnTable(CustomerBase currentCustomer)
@@ -37,11 +51,10 @@ public class ServeableTable : ServeMain
         {
             if (!a.IsOccoupied)
             {
-                handleTheCustomer.transform.position = a.ChairObject.position;
-                handleTheCustomer.transform.parent = a.ChairObject.transform;
+                handleTheCustomer.SuccessfullyManagedSit(a);
+
                 a.Customer = handleTheCustomer.gameObject;
                 a.IsOccoupied = true;
-                handleTheCustomer.SuccessfullyManagedSit();
                 break;
             }
         }
@@ -51,12 +64,11 @@ public class ServeableTable : ServeMain
     {
         if (!IsThereCustomerOnTable())
         {
-            Debug.Log("There is no customer on table");
             return;
         }
 
         currentHitTimer++;
-        HandleReciept(currentHitTimer % 4);
+        HandleReciept(currentHitTimer % (totalHitCount + 1));
     }
     private void HandleReciept(int currentHit)
     {
@@ -67,24 +79,26 @@ public class ServeableTable : ServeMain
                 a.action?.Invoke();
             }
         }
+        UIManager.SetSlider((float)currentHitTimer / (float)totalHitCount);
     }
     public void TakeOrder()
     {
 
         Debug.Log("Order Taken");
-        UIManager.SetUI(1);
+        UIManager.SetSprite(1);
     }
     public void CookReceipt()
     {
-        UIManager.SetUI(2);
+        UIManager.SetSprite(2);
         Debug.Log("Dish cooked");
     }
     public void ServeFood()
     {
-        UIManager.SetUI(0);
+        UIManager.SetSprite(0);
         Debug.Log("Dish Served");
         currentHitTimer = 0;
         ServeToAllCustomerOnChairs();
+        UIManager.SetSlider(0);
     }
     public void ServeToAllCustomerOnChairs()
     {

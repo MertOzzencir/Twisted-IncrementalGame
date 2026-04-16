@@ -11,7 +11,6 @@ public class ServeMain : MonoBehaviour
 
     public virtual void InitializeTable(ServeMainSO data, ServeSystemManager currentOwner)
     {
-        Debug.Log("Main");
         this.data = data;
         Owner = currentOwner;
     }

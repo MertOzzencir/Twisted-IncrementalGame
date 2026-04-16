@@ -28,10 +28,14 @@ public abstract class CustomerBase : MonoBehaviour
     {
         Owner = owner;
     }
-    public void SuccessfullyManagedSit()
+    public void SuccessfullyManagedSit(TableChairs currentChair)
     {
-        Owner.DeleteCustomerOnManager(this);
+        movementController.StopVelocity();
         Destroy(movementController);
+
+        transform.position = currentChair.ChairObject.position;
+        transform.parent = currentChair.ChairObject;
+        Owner.DeleteCustomerOnManager(this);
     }
 
 }

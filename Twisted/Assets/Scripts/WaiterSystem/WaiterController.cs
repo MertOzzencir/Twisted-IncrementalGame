@@ -2,25 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaiterManager : MonoBehaviour
+public class WaiterController : MonoBehaviour
 {
+    [Header("Ray Casting Settings")]
     [SerializeField] private int rayCount;
     [SerializeField] private float rayLength;
+    [SerializeField] private Transform rayHeight;
+    [SerializeField] private LayerMask hitMask;
+    [Header("Movement Settings")]
     [SerializeField] private float forcePower;
     [SerializeField] private float forceTimerThreshold;
-    [SerializeField] private LayerMask hitMask;
+    [SerializeField] private GameObject visual;
+    [Header("Animation Settings")]
     [SerializeField] private float inAnimationTime;
     [SerializeField] private float outAnimationTime;
-    [SerializeField] private GameObject visual;
-    [SerializeField] private Transform rayHeight;
+
+    public bool IsActiveWorking = false;
+    public Vector3 CurrentDirection;
     private Rigidbody rb;
     private List<Vector3> normalizedRays;
-    Vector3 forceDirection;
+    private UIManager UIManager;
 
     float testTimer;
     WaiterAnimationController animController;
     void Awake()
     {
+        UIManager = GetComponent<UIManager>();
         animController = GetComponent<WaiterAnimationController>();
         normalizedRays = new List<Vector3>();
         rb = GetComponent<Rigidbody>();
@@ -42,7 +49,6 @@ public class WaiterManager : MonoBehaviour
                     if (hit.transform.TryGetComponent(out ServeableTable hitCorner))
                     {
                         SetDirectionVector(Vector3.Reflect(rb.linearVelocity, hit.normal).normalized);
-                        Debug.Log("Trying to Hit The wall");
                         if (animTimer > 0.1f)
                         {
                             animController.TriggerHit();
@@ -65,11 +71,17 @@ public class WaiterManager : MonoBehaviour
             visual.transform.rotation = Quaternion.Lerp(visual.transform.rotation, lookDirection, 15 * Time.deltaTime);
         }
     }
+    public void OnPickedFromManager(bool state)
+    {
+        UIManager.SetSprite(0);
+        UIManager.CanvasActivationOnScene(state);
+        IsActiveWorking = state;
+    }
     private void FixedUpdate()
     {
-        if (forceDirection != Vector3.zero)
+        if (CurrentDirection != Vector3.zero)
         {
-            rb.linearVelocity = forceDirection * forcePower;
+            rb.linearVelocity = CurrentDirection * forcePower;
 
             SetDirectionVector(Vector3.zero);
         }
@@ -77,7 +89,7 @@ public class WaiterManager : MonoBehaviour
     }
     public void SetDirectionVector(Vector3 dir)
     {
-        forceDirection = dir;
+        CurrentDirection = dir;
     }
     private List<Vector3> RayCastToAllSides()
     {
@@ -92,13 +104,6 @@ public class WaiterManager : MonoBehaviour
     }
 
 
-    private void OnEnable()
-    {
-        ShootManager.Instance.SubscribeToShootManager(this);
-    }
-    private void OnDisable()
-    {
-        ShootManager.Instance.UnSubscribeToShootManager(this);
-    }
+
 }
 

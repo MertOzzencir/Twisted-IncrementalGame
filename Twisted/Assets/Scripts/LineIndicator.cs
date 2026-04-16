@@ -5,17 +5,16 @@ public class LineIndicator : MonoBehaviour
 {
     [SerializeField] private GameObject indicator;
 
-    List<LineRenderer> indicators = new List<LineRenderer>();
+    LineRenderer indicators;
 
-    public void DrawLine(int lineIndex, Vector3 pos1, Vector3 pos2)
+    public void DrawLine(Vector3 pos1, Vector3 pos2)
     {
-        LineRenderer currentRenderer = indicators[lineIndex];
 
-        if (!currentRenderer.gameObject.activeSelf)
-            currentRenderer.gameObject.SetActive(true);
+        if (!indicators.gameObject.activeSelf)
+            indicators.gameObject.SetActive(true);
 
-        currentRenderer.SetPosition(0, pos1);
-        currentRenderer.SetPosition(1, pos2);
+        indicators.SetPosition(0, pos1);
+        indicators.SetPosition(1, pos2);
     }
     public void CreateIndicator()
     {
@@ -24,13 +23,10 @@ public class LineIndicator : MonoBehaviour
         LineRenderer newIndicator = objects.GetComponent<LineRenderer>();
         newIndicator.gameObject.SetActive(false);
         objects.transform.parent = transform;
-        indicators.Add(newIndicator);
+        indicators = newIndicator;
     }
     public void IndicatorActiveState(bool state)
     {
-        foreach (var a in indicators)
-        {
-            a.gameObject.SetActive(state);
-        }
+        indicators.gameObject.SetActive(state);
     }
 }
